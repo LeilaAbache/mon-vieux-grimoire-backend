@@ -156,11 +156,8 @@ exports.createRating = (req, res, next) => {
 };
 
 exports.getBestRatedBooks = (req, res, next) => {
-  // Récupère tous les livres de la db
   Book.find()
-    // Tri des livres en fonction de leur note moyenne (ordre décroissant = note la plus élévée en premier)
     .sort({ averageRating: -1 })
-    // Limite les résultats aux trois premiers livres de la liste triée
     .limit(3)
     .then((books) => res.status(200).json(books))
     .catch((error) => res.status(400).json({ error }));
