@@ -2,6 +2,7 @@
 const express = require("express");
 // Importation de la bibliothèque mongoose permettant de se connecter et intéragir avec mongoDb
 const mongoose = require("mongoose");
+require("dotenv").config(); // Charge les variables d'environnement du fichier .env
 
 // Importation des routes pour les livres
 const booksRoutes = require("./routes/books");
@@ -12,10 +13,10 @@ const path = require("path");
 
 // Connexion avec la base de données mongoDB
 mongoose
-  .connect(
-    "mongodb+srv://leiladevw60:123456la@mon-vieux-grimoire.ljyb3fm.mongodb.net/?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
