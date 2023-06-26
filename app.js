@@ -3,6 +3,8 @@ const express = require("express");
 // Importation de la bibliothèque mongoose permettant de se connecter et intéragir avec mongoDb
 const mongoose = require("mongoose");
 require("dotenv").config(); // Charge les variables d'environnement du fichier .env
+const helmet = require("helmet");
+const mongoSanitize = require("mongo-sanitize");
 
 // Importation des routes pour les livres
 const booksRoutes = require("./routes/books");
@@ -31,15 +33,28 @@ app.use(express.urlencoded({ extended: true }));
 
 // Gestion des erreurs CORS
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  // pour toutes les req entrantes
+  res.setHeader("Access-Control-Allow-Origin", "*"); // autorise l'accès depuis toutes les origines
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  );
+  ); // les entêtes qui peuvent être inclues dans la req
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
+  ); // methodes http autorisées dans l'application
+  next();
+});
+
+// Middleware Helmet pour sécuriser les en-têtes HTTP
+app.use(helmet());
+
+// Middleware pour nettoyer les données provenant des requêtes
+app.use((req, res, next) => {
+  // Nettoie les données d'éventuelles opérations d'injection
+  mongoSanitize(req.body);
+  mongoSanitize(req.params);
+  mongoSanitize(req.query);
   next();
 });
 
