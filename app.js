@@ -3,8 +3,6 @@ const express = require("express");
 // Importation de la bibliothèque mongoose permettant de se connecter et intéragir avec mongoDb
 const mongoose = require("mongoose");
 require("dotenv").config(); // Charge les variables d'environnement du fichier .env
-const helmet = require("helmet");
-const mongoSanitize = require("mongo-sanitize");
 
 // Importation des routes pour les livres
 const booksRoutes = require("./routes/books");
@@ -43,18 +41,6 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
   ); // methodes http autorisées dans l'application
-  next();
-});
-
-// Middleware Helmet pour sécuriser les en-têtes HTTP
-app.use(helmet());
-
-// Middleware pour nettoyer les données provenant des requêtes
-app.use((req, res, next) => {
-  // Nettoie les données d'éventuelles opérations d'injection
-  mongoSanitize(req.body);
-  mongoSanitize(req.params);
-  mongoSanitize(req.query);
   next();
 });
 
